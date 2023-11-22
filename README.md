@@ -1,5 +1,5 @@
 # Recon(Reconnaissance) # 
-## 1.Passive Reconnaissance
+## 1. Passive Reconnaissance
 ### commmand: ###   
 ```
 whois domain.com
@@ -26,7 +26,7 @@ dig @1.1.1.1 domain.com MX
 * [https://www.shodan.io/](https://www.shodan.io/) 
 * [Search Query Fundamentals](https://help.shodan.io/the-basics/search-query-fundamentals) 
 
-## 2.Active Reconnaissance
+## 2. Active Reconnaissance
 ### web browser 
   (1) Add a port to the address egg:https://127.0.0.1:8834/ will connect to 127.0.0.1 (localhost) at port 8834 via HTTPS protocol.   
   (2) Developer Tools  
