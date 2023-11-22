@@ -1,15 +1,17 @@
 # Recon(Reconnaissance) # 
 ## 1. Passive Reconnaissance
 ### commmand: ###   
-`whois tryhackme.com`  
+```
+whois tryhackme.com
 
-`nslookup tryhackme.com`  
-`nslookup -type=A tryhackme.com 1.1.1.1`  
-`nslookup -type=a tryhackme.com 1.1.1.1`  
+nslookup tryhackme.com
+nslookup -type=A tryhackme.com 1.1.1.1
+nslookup -type=a tryhackme.com 1.1.1.1 
 
-`dig tryhackme.com`  
-`dig tryhackme.com MX`  
-`dig @1.1.1.1 tryhackme.com MX`  
+dig tryhackme.com 
+dig tryhackme.com MX  
+dig @1.1.1.1 tryhackme.com MX
+```
 >[public DNS servers](https://duckduckgo.com/?q=public+dns) 
 
 ![DNS query type](./image/dns_query_type.png)
