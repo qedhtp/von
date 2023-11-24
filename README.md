@@ -70,6 +70,8 @@ nc -lvnp port//server
 # Network Security
 ## Nmap 
 ### Nmap Live Host Discovery
+**Goal: knowing which hosts are up and avoid wasting our time port-scanning an offline host or an IP address not in use**  
+
 basic command:
 ```
 namp ipaddress domain.com example.com  //scan 3 IP address
@@ -93,13 +95,40 @@ nmap -sL targets //display detailed list of the hosts
 
   command:
   ```
-  nmap -PR -sn ipaddress/bumber //-PR only ARP scan -sn withoutport-scanning
+  nmap -PR -sn ipaddress/bumber //-PR only ARP scan    -sn without port-scanning
   
   arp-scan -localnet or arp-scan -l   //scan all localnet
   more than one interface:
   arp-scan -I eth0 -l //-I sepcify interface
   apr-scan ipadress/number equal to nmap -PR -sn ipadress/number
   ```
-  #### Nmap Host Discovery Using ICMP
-  
+#### Nmap Host Discovery Using ICMP
+Rember, [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol) recho requests tend to be blocked  
+command:  
+```
+nmap -PE -sn ipaddress/number //-PE ICMP echo request
+nmap -PP -sn ipaddress/number //-pp use ICMP timestamp request. if ICMP echo request be blocked  
+nmap -Pm -sn ipaddress/number
+
+tip: try another if one is blocked
+```
+#### Nmap Host Discovery Using TCP and UDP
+##### TCP
+command:
+```
+TCP SYN Ping
+nmap -PS -sn ipaddress/number   //privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -Ps21 -PS21-25 -PS80,443,8080
+
+TCP ACK Ping
+nmap -PA -sn ipaddress/number //if is unprivileged user, Nmap attempt 3-way handshake. specific port is similar to TCP SYN ping   80 by default
+   
+```
+##### UDP
+send a UDP packet to open port is not expected to lead to any reply. But if send a UDP packet to a closed UDP port will get an ICMP port unreachable packet. this indicates that the target system is up and available.
+command:
+```
+nmap -PM -sn ipaddress/number
+```
+#### Using Reverse-DNS lookup
+
     
