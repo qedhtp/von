@@ -106,9 +106,9 @@ nmap -sL targets //display detailed list of the hosts
 Rember, [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol) recho requests tend to be blocked  
 command:  
 ```
-nmap -PE -sn ipaddress/number //-PE ICMP echo request
-nmap -PP -sn ipaddress/number //-pp use ICMP timestamp request. if ICMP echo request be blocked  
-nmap -Pm -sn ipaddress/number
+nmap -PE -sn ip_address/number //-PE ICMP echo request
+nmap -PP -sn ip_address/number //-pp use ICMP timestamp request. if ICMP echo request be blocked  
+nmap -Pm -sn ip_address/number
 
 tip: try another if one is blocked
 ```
@@ -117,18 +117,34 @@ tip: try another if one is blocked
 command:
 ```
 TCP SYN Ping
-nmap -PS -sn ipaddress/number   //privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -Ps21 -PS21-25 -PS80,443,8080
+nmap -PS -sn ip_address/number   //privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -Ps21 -PS21-25 -PS22,80,443,8080
 
 TCP ACK Ping
-nmap -PA -sn ipaddress/number //if is unprivileged user, Nmap attempt 3-way handshake. specific port is similar to TCP SYN ping   80 by default
+nmap -PA -sn ip_address/number //if is unprivileged user, Nmap attempt 3-way handshake. specific port is similar to TCP SYN ping   80 by default
    
 ```
 ##### UDP
 send a UDP packet to open port is not expected to lead to any reply. But if send a UDP packet to a closed UDP port will get an ICMP port unreachable packet. this indicates that the target system is up and available.
 command:
 ```
-nmap -PM -sn ipaddress/number
+nmap -PM -sn ip_address/number
 ```
 #### Using Reverse-DNS lookup
 
-    
+```
+-n  //using reverse-DNS by default. using -n to skip this step
+-R  //reverse-DNS look up for all hosts(include offline)
+```
+### Nmap basic port Scans
+#### TCP Connect Scan
+command:
+```
+nmap -sT ip_address/number //TCP scan -F only 100 most ports  -r consecutive scan instead of random scan. This is a unprivileged user only possible option to discover open TCP ports. 
+```
+#### TCP SYN Scan
+No tcp connection was fully established with the target.   
+command:
+```
+nmap -sS ip_address/number //default TCP scan mode, only privileged user can do.
+```
+#### UDP scan 
