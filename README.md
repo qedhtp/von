@@ -266,3 +266,10 @@ nmap -sV ip_address  // -sV collect and determine service and version for the op
 --version-all  //intensity 9
 
 ```
+####  OS Detection and Traceroute
+command:  
+```
+nmap -sS -o ip_address //note: Less precise
+
+nmap -sS --tracroute ip_address //note: TTL reduce. different form traceroute or tracert command
+```
