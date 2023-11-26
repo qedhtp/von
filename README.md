@@ -269,7 +269,48 @@ nmap -sV ip_address  // -sV collect and determine service and version for the op
 ####  OS Detection and Traceroute
 command:  
 ```
-nmap -sS -o ip_address //note: Less precise
+nmap -sS -O ip_address //note: Less precise
 
 nmap -sS --tracroute ip_address //note: TTL reduce. different form traceroute or tracert command
 ```
+#### Nmap Scripting Engine (NSE)
+command:
+```
+nmap -sS -n --script "script" ip_address //--script=default or -sC is default category. there is another categories,eg:auth,broadcast,brute,vuln......
+```
+#### Saving the output 
+command:
+```
+normal:
+nmap -sS -sV -O -oN 10.10.178.34_scan ip_address 
+
+Greable:
+nmap -sS -sV -O -oG 10.10.178.34_scan ip_address
+
+XML:
+nmap -sS -sV -O -oX 10.10.178.34_scan ip_address
+
+-oA for all
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
