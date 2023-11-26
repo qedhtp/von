@@ -292,9 +292,34 @@ nmap -sS -sV -O -oX 10.10.178.34_scan ip_address
 
 -oA for all
 ```
+### Protocols and Servers
+| Protocol | TCP Port |Application(s)|Data Security|
+| ---------|----------| ---------    |--------     |
+| FTP      | 21       | File Transfer| Cleartext   |
+| HTTP     | 80       | Worldwide Web| Cleartext   |
+| IMAP     | 143      | Email (MDA)  | Cleartext   |
+| POP3     | 110      | Email (MDA)  | Cleartext   |
+| SMTP     | 25       |Email (MTA)   |Cleartext    |
+| Telnet   | 23       |Remote Access | Cleartext   |
+#### Telnet
+remote login, not encrypted
+#### 
+http
+#### 
+ftp
+command:
+```
+ftp ip_address  //anonymous ascii get filename
+```
+#### SMTP 
+command:  
+```
+telnet ip_address 25
+```
+#### POP3 
 
 
-
+#### IMAP
 
 
 
