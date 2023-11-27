@@ -296,13 +296,20 @@ nmap -sS -sV -O -oX 10.10.178.34_scan ip_address
 | Protocol | TCP Port |Application(s)|Data Security|
 | ---------|----------| ---------    |--------     |
 | FTP      | 21       | File Transfer| Cleartext   |
+| FTPS     | 990      | File Transfer| Encrypted   |
 | HTTP     | 80       | Worldwide Web| Cleartext   |
+| HTTPS    | 443      | Worldwide Web| Encrypted   |
 | IMAP     | 143      | Email (MDA)  | Cleartext   |
+| IMAPS    | 993      | Email (MDA)  | Encrypted   |
 | POP3     | 110      | Email (MDA)  | Cleartext   |
+| POP3S    | 995      | Email (MDA)  | Encrypted   |
 | SMTP     | 25       |Email (MTA)   |Cleartext    |
+| SMTPS    | 465      |Email (MTA)   |Encrypted    |
 | Telnet   | 23       |Remote Access | Cleartext   |
+| SFTP     | 22       |File Transfer | Encrypted   |
+| SSH      | 22       |Remote Access and File Transfer | Encrypted   |
 #### Telnet
-remote login, not encrypted
+remote access, not encrypted
 #### 
 http
 #### 
@@ -320,6 +327,29 @@ telnet ip_address 25
 
 
 #### IMAP
+
+
+### Sniffing Attack 
+three tool: Tcpdump Wireshark Tshark 
+
+command: 
+
+```
+tcpdump port 110 -A //110 set only POP3 server  -A display ASCII format
+```
+### Man-in-the-Middle(MITM) Attack  
+### TLS 
+### ssh 
+### password attack
+tool: THC Hydra  
+command:  
+```
+hydra -l username -P wordlist.txt server service  //hydra -l lazie -P rockyou.txt 10.10.39.250 imap  
+
+-s port
+-V or -vV  //Show the username and password combinations being tried
+-d //Display debugging output if the verbose output is not helping
+```
 
 
 
