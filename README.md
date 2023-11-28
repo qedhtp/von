@@ -353,6 +353,54 @@ hydra -l username -P wordlist.txt server service  //hydra -l lazie -P rockyou.tx
 
 
 
+# Exploit Vulnerabilities 
+
+## Automated and Manual Vulnerability Research 
+* exploit DB  
+* NVD 
+* Rapid7 
+* github  
+    - search "poc" "vulnerability" "cve" 
+* Searchsploit 
+
+# Metasploit
+## Metaasploit Introduction 
+command:  
+```
+msfconsole   //enter msf  
+
+use <modules> or <number>  //enter modules' context
+
+show <modules>  //show relevant modules 
+
+back   //quie context 
+info //info command relevant modules  
+
+search <keyword>
+search type:<modules> <type>
+
+show options //list the required parammeters 
+
+set PARAMETER_NAME VALUE
+
+unset  //unset specific context 
+unset all //unset all var
+
+setg <modules>//set values for all modules
+unsetg //clear any value set with setg
+
+exploit or run  // in context
+exploit -z //exploit in the background
+
+check  //check if the target system is vulnerable without exploiting it 
+
+background //background session
+sessions //see the existing sessions
+sessions -i //open specific session
+```
+
+
+
 
 
 
