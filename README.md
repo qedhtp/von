@@ -364,7 +364,7 @@ hydra -l username -P wordlist.txt server service  //hydra -l lazie -P rockyou.tx
 * Searchsploit 
 
 # Metasploit
-## Metaasploit Introduction 
+## Metasploit Introduction 
 command:  
 ```
 msfconsole   //enter msf  
