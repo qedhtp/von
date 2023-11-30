@@ -442,7 +442,25 @@ finding available(live) hosts using the db_nmap command
 scanning these for further vulnerabilities or open ports
 
 ```
-### 
+### Vulnerability Scanning 
+command:  
+```
+step 1 fingerprint and recon the target then use search moduls
+```
+### Exploitation 
+command: 
+```
+show payload //list other commands can use with that specific exploit 
+set payload <number>  //set specific payload
+
+rember:some payload will need new param. eg:reverse payload need Lhost
+
+Ctrl+z //background
+Ctrl+c //abort
+
+session -h
+session -i //follow by the session ID
+```
 
 
 
