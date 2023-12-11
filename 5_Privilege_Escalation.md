@@ -47,6 +47,7 @@ remmina  //login to the windows server
 
 
 # Linux Privilege Escalation
+[Write-up](https://dev.to/christinec_dev/try-hack-me-linux-privesc-complete-write-up-20fg)
 
 ## Enumeration 
 ### manul
@@ -67,7 +68,7 @@ sudo -l //what commands your user can run using sudo
 ls 
 ls -l 
 ls -la 
-id //list general overview of the user's privilege level and group memberships
+id #list general overview of the user's privilege level and group memberships
 id <usrname>
 cat /etc/passwd  
 cat /etc/passwd | cut -d ":" -f 1 
