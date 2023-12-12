@@ -4,7 +4,7 @@
 **Goal: knowing which hosts are up and avoid wasting our time port-scanning an offline host or an IP address not in use**  
 
 basic command:
-```
+```bash
 namp ipaddress domain.com example.com  //scan 3 IP address
 nmap 10.11.12.15-20  //scan 6 IP address
 10.10.0-255.101-125 //scan 6400 IP address
@@ -25,7 +25,7 @@ nmap -sL targets //display detailed list of the hosts
     * resorts to a TCP3-way handshake by sending SYN packets to ports 80 and 443  
 
   command:
-  ```
+  ```bash
   nmap -PR -sn ipaddress/number //-PR only ARP scan    -sn without port-scanning
   
   arp-scan -localnet or arp-scan -l   //scan all localnet
@@ -36,7 +36,7 @@ nmap -sL targets //display detailed list of the hosts
 #### Nmap Host Discovery Using ICMP
 Rember, [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol) recho requests tend to be blocked  
 command:  
-```
+```bash
 nmap -PE -sn ip_address/number //-PE ICMP echo request
 nmap -PP -sn ip_address/number //-pp use ICMP timestamp request. if ICMP echo request be blocked  
 nmap -Pm -sn ip_address/number
@@ -46,7 +46,7 @@ tip: try another if one is blocked
 #### Nmap Host Discovery Using TCP and UDP
 ##### TCP
 command:
-```
+```bash
 TCP SYN Ping
 nmap -PS -sn ip_address/number   //privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -PS21 -PS21-25 -PS22,80,443,8080
 
@@ -57,36 +57,36 @@ nmap -PA -sn ip_address/number //if is unprivileged user, Nmap attempt 3-way han
 ##### UDP
 send a UDP packet to open port is not expected to lead to any reply. But if send a UDP packet to a closed UDP port will get an ICMP port unreachable packet. this indicates that the target system is up and available.
 command:
-```
+```bash
 nmap -PM -sn ip_address/number
 ```
 #### Using Reverse-DNS lookup
 
-```
+```bash
 -n  //using reverse-DNS by default. using -n to skip this step
 -R  //reverse-DNS look up for all hosts(include offline)
 ```
 ### Nmap basic port Scans
 #### TCP Connect Scan
 command:
-```
+```bash
 nmap -sT ip_address/number //TCP scan -F only 100 most ports  -r consecutive scan instead of random scan. This is a unprivileged user only possible option to discover open TCP ports. 
 ```
 #### TCP SYN Scan
 No tcp connection was fully established with the target.   
 command:
-```
+```bash
 nmap -sS ip_address/number //default TCP scan mode, only privileged user can do.
 ```
 #### UDP scan 
 no handhake  
 command:
-```
+```bash
 nmap -sU ip_address/number
 ```
 #### Fine-Tuning Scope and Performance 
 basic option:
-```
+```bash
 port:
 -p22,80,443
 -p1-1023
@@ -113,7 +113,7 @@ parallel:
 ### Nmap Advanced Ports Scans  
 #### TCP Null Scan, FIN Scan, Xmas Scan 
 command:  
-```
+```bash
 Null Scan:
 nmap -sN ip_address    //no TCP flag. RST,ACK-->close, no reply-->open or firewall. Please rember-->many Nmap need root
 
@@ -126,12 +126,12 @@ mmap -sX ip_address //set the FIN,PSH and URG flags simultaneously. RST,ACK-->cl
 #### TCP Maimon 
 Rember, this scan could not infer the port is close or open, but benefit for hacking mindset.  
 command:
-```
+```bash
 nmap -sM ip_address //set FIN/ACK-->most target reply RST, whether open or close
 ```
 #### TCP ACK,Window,and Custom Scan
 command:
-```
+```bash
 TCP ACK:
 nmap -sA ip_address //infer which port are not being blocked. discover firewall rulesets and configuration.
 
@@ -143,7 +143,7 @@ nmap --scanflags RSTSYNFIN //set RST,SYN,FIN scan. note: firewall not block does
 ```
 #### Spoofing and Decoys
 command:   
-```
+```bash
 Spoofing:
 nmap -s spoofed_ip ip_address //basic command
 mmap -e net_interface -Pn -S spoofed_ip ip_addresss //-e specify the network interface  -Pn disable ping scan. ???ping is active host discover?
@@ -158,7 +158,7 @@ nmap -D 10.10.0.1,10.10.0.2,random,random,me ip_address
 #### Fragmented Packets  
 
 for evade firewall or IDS, divide IP header data 
-```
+```bash
 -f //diveded into 8 bytes or less    always choice
 -ff //16 bytes
 --mtu //default bytes
@@ -166,12 +166,12 @@ for evade firewall or IDS, divide IP header data
 ```
 #### idle/Zombie Scan 
 command: 
-```
+```bash
 nmap -sI zombie_ip ip_address //difference=1, close or filter. difference=2, open
 ```
 #### Getting More Details 
 command:
-```
+```bash
 --reason //display reason
 -v  //display verbose output
 -vv //even more verbosity
@@ -181,7 +181,7 @@ command:
 ### Nmap Post Port Scans  
 #### Service Detection 
 command:  
-```
+```bash
 nmap -sV ip_address  // -sV collect and determine service and version for the open ports. note: this force TCP 3-way. So the default stealth SYN scan not work.
 
 --version-intensity level  //range between 0 to 9
@@ -191,19 +191,19 @@ nmap -sV ip_address  // -sV collect and determine service and version for the op
 ```
 ####  OS Detection and Traceroute
 command:  
-```
+```bash
 nmap -sS -O ip_address //note: Less precise
 
 nmap -sS --tracroute ip_address //note: TTL reduce. different form traceroute or tracert command
 ```
 #### Nmap Scripting Engine (NSE)
 command:
-```
+```bash
 nmap -sS -n --script "script" ip_address //--script=default or -sC is default category. there is another categories,eg:auth,broadcast,brute,vuln......
 ```
 #### Saving the output 
 command:
-```
+```bash
 normal:
 nmap -sS -sV -O -oN 10.10.178.34_scan ip_address 
 
@@ -238,12 +238,12 @@ http
 #### 
 ftp
 command:
-```
+```bash
 ftp ip_address  //anonymous ascii get filename
 ```
 #### SMTP 
 command:  
-```
+```bash
 telnet ip_address 25
 ```
 #### POP3 
@@ -257,7 +257,7 @@ three tool: Tcpdump Wireshark Tshark
 
 command: 
 
-```
+```bash
 tcpdump port 110 -A //110 set only POP3 server  -A display ASCII format
 ```
 ### Man-in-the-Middle(MITM) Attack  
@@ -266,7 +266,7 @@ tcpdump port 110 -A //110 set only POP3 server  -A display ASCII format
 ### password attack
 tool: THC Hydra  
 command:  
-```
+```bash
 hydra -l username -P wordlist.txt server service  //hydra -l lazie -P rockyou.txt 10.10.39.250 imap  
 
 -s port

