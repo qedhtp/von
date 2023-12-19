@@ -1,4 +1,10 @@
-# Recon(Reconnaissance) # 
+# Recon(Reconnaissance)
+
+- Open-Source Intelligence(OSINT)
+  - github 
+  - StackOverflow
+- Infrastructure Enumeration
+
 ## 1. Passive Recon
 ### commmand: ###   
 ```

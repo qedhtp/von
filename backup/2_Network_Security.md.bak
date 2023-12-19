@@ -48,9 +48,9 @@ nmap -sL targets #display detailed list of the hosts
 Rember, [ICMP](https:#en.wikipedia.org/wiki/Internet_Control_Message_Protocol) recho requests tend to be blocked  
 command:  
 ```bash
-nmap -PE -sn 0.0.0.0/24 #-PE ICMP echo request
-nmap -PP -sn 0.0.0.0/24 #-pp use ICMP timestamp request. if ICMP echo request be blocked  
-nmap -Pm -sn 0.0.0.0/24
+nmap -PE -sn ip_address/number #-PE ICMP echo request
+nmap -PP -sn ip_address/number #-pp use ICMP timestamp request. if ICMP echo request be blocked  
+nmap -Pm -sn ip_address/number
 
 tip: try another if one is blocked
 ```
@@ -59,17 +59,17 @@ tip: try another if one is blocked
 command:
 ```bash
 TCP SYN Ping
-nmap -PS -sn 0.0.0.0/24   #privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -PS21 -PS21-25 -PS22,80,443,8080
+nmap -PS -sn ip_address/number   #privileged user can choice no TCP 3-way(TCP ACK ping), vice versa. use -PS{port}  to specific port eg: -PS21 -PS21-25 -PS22,80,443,8080
 
 TCP ACK Ping
-nmap -PA -sn 0.0.0.0/24 #if is unprivileged user, Nmap attempt 3-way handshake. specific port is similar to TCP SYN ping   80 by default
+nmap -PA -sn ip_address/number #if is unprivileged user, Nmap attempt 3-way handshake. specific port is similar to TCP SYN ping   80 by default
    
 ```
 ##### UDP
 send a UDP packet to open port is not expected to lead to any reply. But if send a UDP packet to a closed UDP port will get an ICMP port unreachable packet. this indicates that the target system is up and available.
 command:
 ```bash
-nmap -PM -sn 0.0.0.0/24
+nmap -PM -sn ip_address/number
 ```
 #### Using Reverse-DNS lookup
 
@@ -78,18 +78,26 @@ nmap -PM -sn 0.0.0.0/24
 -R  #reverse-DNS look up for all hosts(include offline)
 ```
 ### Nmap basic port Scans
-
+#### TCP Connect Scan
 command:
 ```bash
-nmap -sT 0.0.0.0/24 #TCP Connect Scan. default TCP scan mode on no root. -F only 100 most ports  -r consecutive scan instead of random scan. This is a unprivileged user only possible option to discover open TCP ports.   note: maybe open, because of firewall 
-
-nmap -sS 0.0.0.0/24 #TCP SYN Scan. two handshake. default TCP scan mode on root. No tcp connection was fully established with the target.
-
-nmap -sU 0.0.0.0/24 #UDP scan. no handhake 
-
-
-
-#Fine-Tuning Scope and Performance
+nmap -sT ip_address/number #TCP scan -F only 100 most ports  -r consecutive scan instead of random scan. This is a unprivileged user only possible option to discover open TCP ports. 
+```
+#### TCP SYN Scan
+No tcp connection was fully established with the target.   
+command:
+```bash
+nmap -sS ip_address/number #default TCP scan mode, only privileged user can do.
+```
+#### UDP scan 
+no handhake  
+command:
+```bash
+nmap -sU ip_address/number
+```
+#### Fine-Tuning Scope and Performance 
+basic option:
+```bash
 port:
 -p22,80,443
 -p1-1023
@@ -112,48 +120,51 @@ control packet rate:
 parallel:
 --max-parallelism number
 --min-parallelism number  #egg:number=512  set at least 512 probes in parallel.
-
 ```
-
 ### Nmap Advanced Ports Scans  
-
+#### TCP Null Scan, FIN Scan, Xmas Scan 
 command:  
 ```bash
-#Null Scan:
-nmap -sN 0.0.0.0    #no TCP flag. RST,ACK-->close, no reply-->open or firewall. Please rember-->many Nmap need root
+Null Scan:
+nmap -sN ip_address    #no TCP flag. RST,ACK-->close, no reply-->open or firewall. Please rember-->many Nmap need root
 
-#FIN Scan:
-nmap -sF 0.0.0.0 #set FIN flag. RST,ACK-->close, noreply-->open or firewall. Nmap need no root
+FIN Scan:
+nmap -sF ip_address #set FIN flag. RST,ACK-->close, noreply-->open or firewall. Nmap need no root
 
-#Xmas Scan:
-mmap -sX 0.0.0.0 #set the FIN,PSH and URG flags simultaneously. RST,ACK-->close, noreply-->open or firewall. Nmap need no root.
-
-#TCP Maimon:
-nmap -sM 0.0.0.0 #set FIN/ACK-->most target reply RST, whether open or close.  Rember, this scan could not infer the port is close or open, but benefit for hacking mindset.  
-
-
+Xmas Scan:
+mmap -sX ip_address #set the FIN,PSH and URG flags simultaneously. RST,ACK-->close, noreply-->open or firewall. Nmap need no root.
+```
+#### TCP Maimon 
+Rember, this scan could not infer the port is close or open, but benefit for hacking mindset.  
+command:
+```bash
+nmap -sM ip_address #set FIN/ACK-->most target reply RST, whether open or close
+```
+#### TCP ACK,Window,and Custom Scan
+command:
+```bash
 TCP ACK:
-nmap -sA 0.0.0.0 #infer which port are not being blocked. discover firewall rulesets and configuration.
+nmap -sA ip_address #infer which port are not being blocked. discover firewall rulesets and configuration.
 
 Window Scan:
-nmap -sW 0.0.0.0 #similar to TCP ACK scan, but results might be different. 
+nmap -sW ip_address #similar to TCP ACK scan, but results might be different. 
 
 Custom Scan:
 nmap --scanflags RSTSYNFIN #set RST,SYN,FIN scan. note: firewall not block does't mean port open. Maybe firewall need update to reflect recent service changes.
-
-
-
-#Spoofing and Decoys
+```
+#### Spoofing and Decoys
+command:   
+```bash
 Spoofing:
-nmap -s spoofed_ip 0.0.0.0 #basic command
-mmap -e net_interface -Pn -S spoofed_ip 0.0.0.0s #-e specify the network interface  -Pn disable ping scan. ???ping is active host discover?
+nmap -s spoofed_ip ip_address #basic command
+mmap -e net_interface -Pn -S spoofed_ip ip_addresss #-e specify the network interface  -Pn disable ping scan. ???ping is active host discover?
 nmap --spoof-mac #same subnet(same Ethernet802.3   same WiFi 802.11)
 rember: Spoofing works need a certain condition.
 
 
 Decoys:
-nmap -D 10.10.0.1,10.10.0.2,me 0.0.0.0 #easy to infer attack's ip
-nmap -D 10.10.0.1,10.10.0.2,random,random,me 0.0.0.0
+nmap -D 10.10.0.1,10.10.0.2,me ip_address #easy to infer attack's ip
+nmap -D 10.10.0.1,10.10.0.2,random,random,me ip_address
 ```
 #### Fragmented Packets  
 
@@ -163,56 +174,58 @@ for evade firewall or IDS, divide IP header data
 -ff #16 bytes
 --mtu #default bytes
 --data-length num #increase packet size, num is a append packets bytes.
-
-
-#idle/Zombie Scan 
-nmap -sI zombie_ip 0.0.0.0 #difference=1, close or filter. difference=2, open
-
-
-#Getting More Details 
+```
+#### idle/Zombie Scan 
+command: 
+```bash
+nmap -sI zombie_ip ip_address #difference=1, close or filter. difference=2, open
+```
+#### Getting More Details 
+command:
+```bash
 --reason #display reason
 -v  #display verbose output
 -vv #even more verbosity
 -d #dubugging
 -dd #more dubugging
 ```
-
 ### Nmap Post Port Scans  
-####  
+#### Service Detection 
 command:  
 ```bash
-#Service Detection
-nmap -sV 0.0.0.0  # -sV collect and determine service and version for the open ports. note: this force TCP 3-way. So the default stealth SYN scan not work.
+nmap -sV ip_address  # -sV collect and determine service and version for the open ports. note: this force TCP 3-way. So the default stealth SYN scan not work.
 
 --version-intensity level  #range between 0 to 9
 --version-light  #intensity 2 
 --version-all  #intensity 9
 
+```
+####  OS Detection and Traceroute
+command:  
+```bash
+nmap -sS -O ip_address #note: Less precise
 
-#OS Detection and Traceroute
-nmap -sS -O 0.0.0.0 #note: Less precise
-
-nmap -sS --tracroute 0.0.0.0 #note: TTL reduce. different form traceroute or tracert command
-
-
-
-#Nmap Scripting Engine (NSE)
-nmap -sS -n --script "script" 0.0.0.0 #--script=default or -sC is default category. there is another categories,eg:auth,broadcast,brute,vuln......
-
-
-#Saving the output 
+nmap -sS --tracroute ip_address #note: TTL reduce. different form traceroute or tracert command
+```
+#### Nmap Scripting Engine (NSE)
+command:
+```bash
+nmap -sS -n --script "script" ip_address #--script=default or -sC is default category. there is another categories,eg:auth,broadcast,brute,vuln......
+```
+#### Saving the output 
+command:
+```bash
 normal:
-nmap -sS -sV -O -oN 10.10.178.34_scan 0.0.0.0 
+nmap -sS -sV -O -oN 10.10.178.34_scan ip_address 
 
 Greable:
-nmap -sS -sV -O -oG 10.10.178.34_scan 0.0.0.0
+nmap -sS -sV -O -oG 10.10.178.34_scan ip_address
 
 XML:
-nmap -sS -sV -O -oX 10.10.178.34_scan 0.0.0.0
+nmap -sS -sV -O -oX 10.10.178.34_scan ip_address
 
 -oA for all
 ```
-
 ### Protocols and Servers
 | Protocol | TCP Port |Application(s)|Data Security|
 | ---------|----------| ---------    |--------     |
@@ -237,12 +250,12 @@ http
 ftp
 command:
 ```bash
-ftp 0.0.0.0  #anonymous ascii get filename
+ftp ip_address  #anonymous ascii get filename
 ```
 #### SMTP 
 command:  
 ```bash
-telnet 0.0.0.0 25
+telnet ip_address 25
 ```
 #### POP3 
 
