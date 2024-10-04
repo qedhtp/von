@@ -34,7 +34,7 @@ func getTranslate (doc *goquery.Document) {
 
 	
 
-	// Determine if a word or a sentence
+	// Determine if a word or a sentence 
 	if word_element.Length() > 0 {
 
 		// pronoounce
