@@ -95,10 +95,55 @@ func getTranslate (doc *goquery.Document) {
 	
 }
 
+func pronounce(pronounce_url *string) {
+	// mate the GET pronounce request
+	response_pronounce, err := http.Get(*pronounce_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// will be closed once the main function exits
+	defer response_pronounce.Body.Close()
+
+	// Create a file to save the voice binary file
+	voice_file, err := os.Create("voice_tmp.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer voice_file.Close()
+
+	// Copy the response body to the file and also a variable
+	body_pronounce, err := io.ReadAll(response_pronounce.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Write the response body to the file
+	_, err = voice_file.Write(body_pronounce)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	err = exec.Command("mpg123","voice_tmp.mp3","-q").Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	err = os.Remove("voice_tmp.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+
+
+}
+
+
 
 func main() {
-	
-	//pattern := 
+	// interactive model
+	// https://chatgpt.com/c/6700d5a5-7874-800a-9170-b74905e63a74
+
+
 
 	// Check if the user provided a argument
 	if len(os.Args) != 2 {
@@ -125,47 +170,13 @@ func main() {
 			log.Fatal(err)
 		}
 
-		// Call a function with *goquery.document
+		// Call the function with *goquery.document
 		getTranslate(doc)
 
-
-
-		// mate the GET pronounce request
-		response_pronounce, err := http.Get(request_url_pronounce)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// will be closed once the main function exits
-		defer response_pronounce.Body.Close()
-
-		// Create a file to save the voice binary file
-		voice_file, err := os.Create("voice_tmp.mp3")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer voice_file.Close()
-
-		// Copy the response body to the file and also a variable
-		body_pronounce, err := io.ReadAll(response_pronounce.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// Write the response body to the file
-		_, err = voice_file.Write(body_pronounce)
-		if err != nil {
-			log.Fatal(err)
-		}
 		
-		err = exec.Command("mpg123","voice_tmp.mp3","-q").Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		
-		err = os.Remove("voice_tmp.mp3")
-		if err != nil {
-			log.Fatal(err)
-		}
+		// call the pronounce function
+		// use pointer
+		pronounce(&request_url_pronounce)
 
 		
 	}
