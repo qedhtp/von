@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -25,11 +27,11 @@ func getTranslate (doc *goquery.Document) {
 	word_form_en := doc.Find("ul.word-wfs-less > li.word-wfs-cell-less > span.transformation")
 	phrase_en := doc.Find("div.webPhrase > ul > li > div.col2 > a.point")
 	phrase_ch := doc.Find("div.webPhrase > ul > li > div.col2 > p.sen-phrase")
+
+	// example
 	example_en := doc.Find("div.col2 > div.word-exp > div.sen-eng")
 	example_ch := doc.Find("div.col2 > div.word-exp > div.sen-ch")
 
-	// example
-	
 	
 	// translate a sentence
 	translate_content := doc.Find("p.trans-content")
@@ -106,18 +108,19 @@ func main() {
 		query := os.Args[1]
 		query_encode := url.QueryEscape(query)
 		// Base url   sound:https://dict.youdao.com/dictvoice?audio=cs&type=2
-		request_url := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
+		request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
+		request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
 		
 		
-		// make the GET request
-		response, err := http.Get(request_url)
+		// make the GET translate request
+		response_translate, err := http.Get(request_url_word)
 		if err != nil {
 			log.Fatal(err)
 		}
 		// will be closed once the main function exits
-		defer response.Body.Close()
-		
-		doc, err := goquery.NewDocumentFromReader(response.Body)
+		defer response_translate.Body.Close()
+
+		doc, err := goquery.NewDocumentFromReader(response_translate.Body)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -126,9 +129,68 @@ func main() {
 		getTranslate(doc)
 
 
+
+		// mate the GET pronounce request
+		response_pronounce, err := http.Get(request_url_pronounce)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// will be closed once the main function exits
+		defer response_pronounce.Body.Close()
+
+		// Create a file to save the voice binary file
+		voice_file, err := os.Create("voice_tmp.mp3")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer voice_file.Close()
+
+		// Copy the response body to the file and also a variable
+		body_pronounce, err := io.ReadAll(response_pronounce.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Write the response body to the file
+		_, err = voice_file.Write(body_pronounce)
+		if err != nil {
+			log.Fatal(err)
+		}
+		
+		err = exec.Command("mpg123","voice_tmp.mp3","-q").Run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		
+		err = os.Remove("voice_tmp.mp3")
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		
 	}
 
 
 
 }
+
+
+// err := cmd.Run()
+
+// package main
+
+// import (
+// 	"fmt"
+// 	"os/exec"
+// )
+
+// func main() {
+// 	// Execute the 'ls' command
+// 	out, err := exec.Command("ls").Output()
+// 	if err != nil {
+// 		fmt.Println("Error:", err)
+// 		return
+// 	}
+// 	// Print the output
+// 	fmt.Println(string(out))
+// }
