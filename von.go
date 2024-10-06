@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -10,9 +9,9 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chzyer/readline"
 )
 
 
@@ -180,6 +179,8 @@ func clearScreen()  {
 }
 
 
+
+
 func main() {
 	// interactive model
 	interactive := flag.Bool("i", false,"")
@@ -189,42 +190,42 @@ func main() {
 
 	// Check if the interactive flag was provided
 	if *interactive {
-		scanner := bufio.NewScanner(os.Stdin)
+		l, err := readline.NewEx(&readline.Config{
+			Prompt:           "> ",
+			InterruptPrompt:  "^c",
+			EOFPrompt:        "exit",
+			HistoryFile:      "/tmp/readline.tmp",
 
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer l.Close()
+
+		// Main interactive loop
 		for {
-			fmt.Print("> ")
+			input, err := l.Readline()
+			if err == readline.ErrInterrupt {
+				// fmt.Printf("\n")
+				continue
+			}	
+			// } else if err == io.EOF {
+			// 	fmt.Println("Goodbye!")
+			// 	return
+			// }
 
-			// Read user input
-			if !scanner.Scan() {
-				break
-			}
-
-			// Get input
-			query := scanner.Text()
-
-			// Process input
-			switch strings.TrimSpace(query) {
-			case "clear":
-				clearScreen()
-			case "exit":
-				
+			// Process user input
+			switch input {
+			case "q":
 				fmt.Println("Goodbye!")
 				return
+			case "c":
+				clearScreen()
 			default:
-				get_query(&query)
+				get_query(&input)
 			}
 
-			
-
-
-			
-
-
-
-
 		}
-		
-		
 
 
 	} else {
@@ -242,16 +243,6 @@ func main() {
 		}
 		
 	}
-
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -274,4 +265,34 @@ func main() {
 // 	}
 // 	// Print the output
 // 	fmt.Println(string(out))
+// }
+
+
+// scanner := bufio.NewScanner(os.Stdin)
+
+// for {
+// 	fmt.Print("> ")
+
+// 	// Read user input
+// 	if !scanner.Scan() {
+// 		break
+// 	}
+
+// 	// Get input
+// 	query := scanner.Text()
+
+// 	// Process input
+// 	switch strings.TrimSpace(query) {
+// 	case "clear":
+// 		clearScreen()
+// 	case "exit":
+		
+// 		fmt.Println("Goodbye!")
+// 		return
+// 	default:
+// 		get_query(&query)
+// 	}
+
+
+
 // }
