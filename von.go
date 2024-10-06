@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -8,13 +10,14 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 
 
-func getTranslate (doc *goquery.Document) {
+func getTranslate(doc *goquery.Document) {
 
 	// pronounce
 	pronounce_element := doc.Find("div.per-phone > span.phonetic")
@@ -137,49 +140,116 @@ func pronounce(pronounce_url *string) {
 
 }
 
+func get_query(query *string) {
+
+	query_encode := url.QueryEscape(*query)
+	// Base url   sound:https://dict.youdao.com/dictvoice?audio=cs&type=2
+	request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
+	request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
+	
+	
+	// make the GET translate request
+	response_translate, err := http.Get(request_url_word)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// will be closed once the main function exits
+	defer response_translate.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(response_translate.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Call the function with *goquery.document
+	getTranslate(doc)
+
+	
+	// call the pronounce function
+	// use pointer
+	pronounce(&request_url_pronounce)
+
+}
+
+// clear screen
+func clearScreen()  {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+
+}
 
 
 func main() {
 	// interactive model
-	// https://chatgpt.com/c/6700d5a5-7874-800a-9170-b74905e63a74
+	interactive := flag.Bool("i", false,"")
+
+	// Parse the command-line flags
+	flag.Parse()
+
+	// Check if the interactive flag was provided
+	if *interactive {
+		scanner := bufio.NewScanner(os.Stdin)
+
+		for {
+			fmt.Print("> ")
+
+			// Read user input
+			if !scanner.Scan() {
+				break
+			}
+
+			// Get input
+			query := scanner.Text()
+
+			// Process input
+			switch strings.TrimSpace(query) {
+			case "clear":
+				clearScreen()
+			case "exit":
+				
+				fmt.Println("Goodbye!")
+				return
+			default:
+				get_query(&query)
+			}
+
+			
+
+
+			
 
 
 
-	// Check if the user provided a argument
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: chtoen <argument>")
-	} else{
-		// get command-line argument
-		query := os.Args[1]
-		query_encode := url.QueryEscape(query)
-		// Base url   sound:https://dict.youdao.com/dictvoice?audio=cs&type=2
-		request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
-		request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
-		
-		
-		// make the GET translate request
-		response_translate, err := http.Get(request_url_word)
-		if err != nil {
-			log.Fatal(err)
+
 		}
-		// will be closed once the main function exits
-		defer response_translate.Body.Close()
-
-		doc, err := goquery.NewDocumentFromReader(response_translate.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// Call the function with *goquery.document
-		getTranslate(doc)
-
 		
-		// call the pronounce function
-		// use pointer
-		pronounce(&request_url_pronounce)
+		
 
+
+	} else {
+			// Check if the user provided a argument
+		if len(os.Args) != 2 {
+			fmt.Println("Usage: chtoen <argument>")
+			return
+		} else{
+			// get command-line argument
+			query := os.Args[1]
+			get_query(&query)
+	
+	
+		
+		}
 		
 	}
+
+
+
+
+
+
+
+
 
 
 
