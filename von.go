@@ -240,7 +240,7 @@ func main() {
 			// Check if the user provided a argument
 		if len(os.Args) != 2 {
 			color.Blue("Prints %s in blue.", "text")
-			fmt.Println("Usage: chtoen <argument>")
+			fmt.Println("Usage: von <argument>")
 			return
 		} else{
 			// get command-line argument
