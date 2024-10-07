@@ -1,4 +1,4 @@
-module wthis
+module github.com/qedhtp/von
 
 go 1.23.0
 
