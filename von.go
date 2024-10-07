@@ -12,8 +12,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chzyer/readline"
+	"github.com/fatih/color"
 )
-
 
 
 func getTranslate(doc *goquery.Document) {
@@ -39,60 +39,65 @@ func getTranslate(doc *goquery.Document) {
 	translate_content := doc.Find("p.trans-content")
 
 
+	// color 
+	c := color.New(color.FgCyan, color.Underline) //.Add(color.Underline).
+	green := color.New(color.FgGreen)
+
+
 	// Determine if a word or a sentence   
 	if word_element.Length() > 0 {
 
 		// pronoounce
-		fmt.Printf("\n    --------------发音---------------")
+		c.Println("\n发音:")
 		if pronounce_element.Length() > 0 {
-			fmt.Printf("\n    英: %s    ", English)
-			fmt.Printf("美: %s    \n", American)
+			green.Printf("    英: %s    ", English)
+			green.Printf("美: %s    \n", American)
 		}
 
 		// word meaning
-		fmt.Printf("\n    --------------释义---------------")
+		c.Println("\n释义:")
 		for i := 0; i < word_element.Length(); i++ {
 			text := word_element.Eq(i).Text()
-			fmt.Printf("\n    %s", text)
+			green.Printf("    %s", text)
 		}
 		fmt.Printf("\n")
 		
 		// word form
 		if word_form_ch.Length() > 1 {
-			fmt.Printf("\n    --------------形态---------------\n")
+			c.Println("\n形态:")
 			for i :=0; i < word_form_ch.Length(); i++ {
 				text_ch := word_form_ch.Eq(i).Text()
 				text_en := word_form_en.Eq(i).Text()
 				
-				fmt.Printf("    %s", text_ch)
-				fmt.Printf(": %s", text_en)
+				green.Printf("    %s", text_ch)
+				green.Printf(": %s", text_en)
 			}
 			fmt.Printf("\n")
 		}
 
 	
 		// phrase
-		fmt.Printf("\n    --------------短语----------------\n")
+		c.Println("\n短语:")
 		for i := 0; i < phrase_en.Length(); i++ {
 			text_en := phrase_en.Eq(i).Text()
 			text_ch := phrase_ch.Eq(i).Text()
-			fmt.Printf("    %d.%s", i+1,text_en)
-			fmt.Printf("  %s\n", text_ch)
+			green.Printf("    %d.%s", i+1,text_en)
+			green.Printf("  %s\n", text_ch)
 		}
 		fmt.Printf("\n")
 
 		// example
-		fmt.Printf("    --------------例句---------------\n")
+		c.Println("例句:")
 		for i :=0; i < example_en.Length(); i++ {
 			text_en := example_en.Eq(i).Text()
 			text_ch := example_ch.Eq(i).Text()
-			fmt.Printf("    %d.%s\n", i+1, text_en)
-			fmt.Printf("      %s\n", text_ch)
+			green.Printf("    %d.%s\n", i+1, text_en)
+			green.Printf("      %s\n", text_ch)
 		}
 
 
 	} else{
-		fmt.Printf("\n    %s\n\n", translate_content.Text())
+		green.Printf("\n    %s\n\n", translate_content.Text())
 	}
 	
 }
@@ -183,7 +188,10 @@ func clearScreen()  {
 
 func main() {
 	// interactive model
-	interactive := flag.Bool("i", false,"")
+	interactive := flag.Bool("i", false,"interactive model")
+
+	// prompt color
+	promptColor := color.New(color.FgYellow).SprintFunc()
 
 	// Parse the command-line flags
 	flag.Parse()
@@ -191,7 +199,7 @@ func main() {
 	// Check if the interactive flag was provided
 	if *interactive {
 		l, err := readline.NewEx(&readline.Config{
-			Prompt:           "> ",
+			Prompt:           promptColor("========> "),
 			InterruptPrompt:  "^c",
 			EOFPrompt:        "exit",
 			HistoryFile:      "/tmp/readline.tmp",
@@ -231,6 +239,7 @@ func main() {
 	} else {
 			// Check if the user provided a argument
 		if len(os.Args) != 2 {
+			color.Blue("Prints %s in blue.", "text")
 			fmt.Println("Usage: chtoen <argument>")
 			return
 		} else{
@@ -245,54 +254,3 @@ func main() {
 	}
 
 }
-
-
-// err := cmd.Run()
-
-// package main
-
-// import (
-// 	"fmt"
-// 	"os/exec"
-// )
-
-// func main() {
-// 	// Execute the 'ls' command
-// 	out, err := exec.Command("ls").Output()
-// 	if err != nil {
-// 		fmt.Println("Error:", err)
-// 		return
-// 	}
-// 	// Print the output
-// 	fmt.Println(string(out))
-// }
-
-
-// scanner := bufio.NewScanner(os.Stdin)
-
-// for {
-// 	fmt.Print("> ")
-
-// 	// Read user input
-// 	if !scanner.Scan() {
-// 		break
-// 	}
-
-// 	// Get input
-// 	query := scanner.Text()
-
-// 	// Process input
-// 	switch strings.TrimSpace(query) {
-// 	case "clear":
-// 		clearScreen()
-// 	case "exit":
-		
-// 		fmt.Println("Goodbye!")
-// 		return
-// 	default:
-// 		get_query(&query)
-// 	}
-
-
-
-// }
