@@ -112,7 +112,7 @@ func pronounce(pronounce_url *string) {
 	defer response_pronounce.Body.Close()
 
 	// Create a file to save the voice binary file
-	voice_file, err := os.Create("voice_tmp.mp3")
+	voice_file, err := os.Create("/tmp/voice_tmp.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,12 +130,12 @@ func pronounce(pronounce_url *string) {
 		log.Fatal(err)
 	}
 	
-	err = exec.Command("mpg123","voice_tmp.mp3","-q").Run()
+	err = exec.Command("mpg123","/tmp/voice_tmp.mp3","-q").Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 	
-	err = os.Remove("voice_tmp.mp3")
+	err = os.Remove("/tmp/voice_tmp.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}
