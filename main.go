@@ -23,30 +23,37 @@ func get_query(query *string) {
 
 	query_encode := url.QueryEscape(*query)
 	// Base url   sound:https://dict.youdao.com/dictvoice?audio=cs&type=2
-	request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
-	request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
-	
-	
-	// make the GET translate request
-	response_translate, err := http.Get(request_url_word)
-	if err != nil {
-		log.Fatal(err)
+	if len(query_encode) > 0 {
+		request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
+		request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
+
+		// make the GET translate request
+		response_translate, err := http.Get(request_url_word)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// will be closed once the main function exits
+		defer response_translate.Body.Close()
+
+		doc, err := goquery.NewDocumentFromReader(response_translate.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Call the function with *goquery.document
+		pkg.GetTranslate(doc)
+
+		
+		// call the pronounce function
+		// use pointer
+		pkg.Pronounce(&request_url_pronounce)
+
 	}
-	// will be closed once the main function exits
-	defer response_translate.Body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(response_translate.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Call the function with *goquery.document
-	pkg.GetTranslate(doc)
-
 	
-	// call the pronounce function
-	// use pointer
-	pkg.Pronounce(&request_url_pronounce)
+	
+	
+	
+
 
 }
 
