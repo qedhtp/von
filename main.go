@@ -23,6 +23,7 @@ func get_query(query *string) {
 
 	query_encode := url.QueryEscape(*query)
 	// Base url   sound:https://dict.youdao.com/dictvoice?audio=cs&type=2
+	//
 	if len(query_encode) > 0 {
 		request_url_word := "https://dict.youdao.com/result?word=" + query_encode + "&lang=en"
 		request_url_pronounce := "https://dict.youdao.com/dictvoice?audio=" + query_encode +"&type=2"
