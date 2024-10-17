@@ -99,10 +99,10 @@ func main() {
 
 			// Process user input
 			switch input {
-			case "q":
+			case ":exit":
 				fmt.Println("Goodbye!")
 				return
-			case "c":
+			case ":clear":
 				clearScreen()
 			default:
 				get_query(&input)
