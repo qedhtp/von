@@ -82,7 +82,7 @@ func main() {
 	// Check if the interactive flag was provided
 	if *interactive {
 		l, err := readline.NewEx(&readline.Config{
-			Prompt:           promptColor("[von]>>> "),
+			Prompt:           promptColor("von>>> "),
 			InterruptPrompt:  "^c",
 			EOFPrompt:        "exit",
 			HistoryFile:      "/tmp/readline.tmp",
