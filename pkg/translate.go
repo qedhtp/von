@@ -50,6 +50,7 @@ func GetTranslate(doc *goquery.Document) {
 		for i := 0; i < word_element.Length(); i++ {
 			text := word_element.Eq(i).Text()
 			green.Printf("    %s", text)
+			fmt.Printf("\n")
 		}
 		fmt.Printf("\n")
 		
