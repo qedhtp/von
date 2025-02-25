@@ -39,14 +39,14 @@ func GetTranslate(doc *goquery.Document) {
 	if word_element.Length() > 0 {
 
 		// pronoounce
-		c.Println("\n发音:")
+		c.Println("\nPhonetic symbol:")
 		if pronounce_element.Length() > 0 {
-			green.Printf("    英: %s    ", English)
-			green.Printf("美: %s    \n", American)
+			green.Printf("    UK: %s    ", English)
+			green.Printf("US: %s    \n", American)
 		}
 
 		// word meaning
-		c.Println("\n释义:")
+		c.Println("\nInterpretation:")
 		for i := 0; i < word_element.Length(); i++ {
 			text := word_element.Eq(i).Text()
 			green.Printf("    %s", text)
@@ -55,7 +55,7 @@ func GetTranslate(doc *goquery.Document) {
 		
 		// word form
 		if word_form_ch.Length() > 1 {
-			c.Println("\n形态:")
+			c.Println("\nForm:")
 			for i :=0; i < word_form_ch.Length(); i++ {
 				text_ch := word_form_ch.Eq(i).Text()
 				text_en := word_form_en.Eq(i).Text()
@@ -68,7 +68,7 @@ func GetTranslate(doc *goquery.Document) {
 
 	
 		// phrase
-		c.Println("\n短语:")
+		c.Println("\nPhrase:")
 		for i := 0; i < phrase_en.Length(); i++ {
 			text_en := phrase_en.Eq(i).Text()
 			text_ch := phrase_ch.Eq(i).Text()
@@ -78,7 +78,7 @@ func GetTranslate(doc *goquery.Document) {
 		fmt.Printf("\n")
 
 		// example
-		c.Println("例句:")
+		c.Println("Examples:")
 		for i :=0; i < example_en.Length(); i++ {
 			text_en := example_en.Eq(i).Text()
 			text_ch := example_ch.Eq(i).Text()
