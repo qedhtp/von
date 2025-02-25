@@ -52,7 +52,7 @@ func GetTranslate(doc *goquery.Document) {
 			green.Printf("    %s", text)
 			fmt.Printf("\n")
 		}
-		fmt.Printf("\n")
+		//fmt.Printf("\n")
 		
 		// word form
 		if word_form_ch.Length() > 1 {
