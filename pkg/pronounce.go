@@ -36,7 +36,7 @@ func Pronounce(pronounce_url *string) {
 		log.Fatal(err)
 	}
 	
-	err = exec.Command("mpg123","/tmp/voice_tmp.mp3","-q").Run()
+	err = exec.Command("mpg123","-q","/tmp/voice_tmp.mp3").Run()
 	if err != nil {
 		log.Fatal(err)
 	}
