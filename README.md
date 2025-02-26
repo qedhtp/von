@@ -69,8 +69,8 @@ Examples:
     这是一个例子
 ```
 ```
-:clear   # clear screen
-:exit    # exit von shell
+[von]>>> :clear   # clear screen
+[von]>>> :exit    # exit von shell
 ```
 
 
