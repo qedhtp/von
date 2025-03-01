@@ -108,7 +108,7 @@ func main() {
 			// Process user input
 			switch input {
 			case ":exit":
-				fmt.Println("Goodbye!")
+				fmt.Println("Goodbye, happy English!")
 				return
 			case ":clear":
 				clearScreen()
